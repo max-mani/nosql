@@ -1,0 +1,167 @@
+
+---
+
+Why Indexing?
+
+Indexes improve query performance by avoiding full collection scans.
+
+They are like a table of contents for faster document retrieval.
+
+
+
+---
+
+1. Create Index (Basic Syntax)
+
+db.collection.createIndex({ field: 1 })  // 1 = ascending, -1 = descending
+
+
+---
+
+2. Types of Indexes
+
+a) Single Field Index
+
+Indexes one field.
+
+
+db.students.createIndex({ name: 1 })
+
+Used when you frequently search by name.
+
+
+---
+
+b) Compound Index
+
+Indexes multiple fields in order.
+
+
+db.students.createIndex({ name: 1, age: -1 })
+
+Efficient for queries using both name and age.
+
+
+---
+
+c) Text Index
+
+Enables full-text search on string content.
+
+
+db.articles.createIndex({ content: "text" })
+
+db.articles.find({ $text: { $search: "mongodb indexing" } })
+
+
+---
+
+d) Hashed Index
+
+Indexes hash of the field value, used for sharding.
+
+
+db.users.createIndex({ user_id: "hashed" })
+
+
+---
+
+e) Multikey Index
+
+Automatically created when indexing an array field.
+
+
+db.students.createIndex({ subjects: 1 })
+
+Allows efficient search inside arrays like subjects: ["Math", "Science"].
+
+
+---
+
+f) Geospatial Index
+
+Used for location-based queries.
+
+
+2D Index (Legacy):
+
+db.places.createIndex({ location: "2d" })
+
+2dsphere Index (Preferred for GeoJSON):
+
+db.places.createIndex({ location: "2dsphere" })
+
+db.places.find({
+  location: {
+    $near: {
+      $geometry: {
+        type: "Point",
+        coordinates: [77.5946, 12.9716]
+      },
+      $maxDistance: 1000  // meters
+    }
+  }
+})
+
+
+---
+
+3. Special Indexes
+
+a) Unique Index
+
+Prevents duplicate values in the indexed field.
+
+
+db.users.createIndex({ email: 1 }, { unique: true })
+
+
+---
+
+b) Sparse Index
+
+Indexes only documents that contain the field.
+
+
+db.records.createIndex({ optionalField: 1 }, { sparse: true })
+
+
+---
+
+c) TTL (Time-To-Live) Index
+
+Auto-deletes documents after a time period.
+
+
+db.logs.createIndex({ createdAt: 1 }, { expireAfterSeconds: 3600 })
+
+Deletes documents 1 hour after createdAt.
+
+
+---
+
+d) Partial Index
+
+Indexes only documents that match a filter condition.
+
+
+db.students.createIndex(
+  { grade: 1 },
+  { partialFilterExpression: { grade: { $gte: 90 } } }
+)
+
+Indexes only students with grade ≥ 90.
+
+
+---
+
+4. View Indexes
+
+db.collection.getIndexes()
+
+5. Drop Index
+
+db.collection.dropIndex({ name: 1 })
+
+
+---

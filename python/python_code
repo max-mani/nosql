@@ -1,0 +1,23 @@
+from pymongo import MongoClient
+
+client = MongoClient("mongodb://localhost:27017/")
+
+db = client["db"]
+col = db["dbs"]
+
+col.insert_one({"name":"John","email":"john@example.com"})
+col.insert_one({"name":"Jane","email":"jane@example.com"})
+
+doc = col.find()
+for i in doc:
+    print(i)
+
+col.update_one({"name":"John"}, {"$set":{"age":30}})
+doc = col.find()
+for i in doc:
+    print(i)
+
+col.delete_one({"name":"Jane"})
+doc = col.find()
+for i in doc:
+    print(i)

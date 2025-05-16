@@ -1,0 +1,172 @@
+──────────────────────────── MongoDB Array Operations ────────────────────────────
+
+1. Add a single item to array (push) Command: $push
+Example:
+db.users.updateOne({ name: "John" }, { $push: { hobbies: "reading" } })
+
+
+2. Add multiple items to array Command: $push + $each
+Example:
+db.users.updateOne({ name: "John" }, { $push: { hobbies: { $each: ["cycling", "swimming"] } } })
+
+
+3. Remove last item from array Command: $pop (1)
+Example:
+db.users.updateOne({ name: "John" }, { $pop: { hobbies: 1 } })
+
+
+4. Remove first item from array Command: $pop (-1)
+Example:
+db.users.updateOne({ name: "John" }, { $pop: { hobbies: -1 } })
+
+
+5. Remove matching value from array Command: $pull
+Example:
+db.users.updateOne({ name: "John" }, { $pull: { hobbies: "reading" } })
+
+
+6. Add item only if it doesn’t exist Command: $addToSet
+Example:
+db.users.updateOne({ name: "John" }, { $addToSet: { hobbies: "drawing" } })
+
+
+7. Match array with exact length Command: $size
+Example:
+db.users.find({ hobbies: { $size: 3 } })
+
+
+8. Match if array contains any values Command: $in
+Example:
+db.users.find({ hobbies: { $in: ["reading", "drawing"] } })
+
+
+9. Match if array contains all values Command: $all
+Example:
+db.users.find({ hobbies: { $all: ["reading", "cycling"] } })
+
+
+10. Match array element with conditions Command: $elemMatch
+Example:
+db.users.find({ scores: { $elemMatch: { $gt: 80, $lt: 90 } } })
+
+
+11. Update matched array element Command: Positional $
+Example:
+db.users.updateOne({ "scores.subject": "math" }, { $set: { "scores.$.score": 95 } })
+
+
+
+──────────────────────────── MongoDB Nested Document Operations ────────────────────────────
+
+1. Find by nested value Command: Dot notation
+Example:
+db.users.find({ "address.city": "Chennai" })
+
+
+2. Update nested field Command: $set
+Example:
+db.users.updateOne({ name: "John" }, { $set: { "address.city": "Delhi" } })
+
+
+3. Add new nested field Command: $set
+Example:
+db.users.updateOne({}, { $set: { "address.pincode": 600001 } })
+
+
+4. Remove nested field Command: $unset
+Example:
+db.users.updateOne({}, { $unset: { "address.street": "" } })
+
+
+5. Match multiple nested fields Command: Dot notation
+Example:
+db.users.find({ "address.city": "Delhi", "address.pincode": 600001 })
+
+
+6. Match full nested object Command: Exact match
+Example:
+db.users.find({ address: { city: "Delhi", pincode: 600001 } })
+
+
+7. Update array inside nested document Command: $set + positional $
+Example:
+db.users.updateOne({ "orders.product": "Laptop" }, { $set: { "orders.$.price": 55000 } })
+
+
+8. Add full nested document Command: $set
+Example:
+db.users.updateOne({ name: "John" }, { $set: { profile: { dob: "2000-01-01", gender: "M" } } })
+
+
+9. Project only nested field Command: Projection
+Example:
+db.users.find({}, { "address.city": 1, _id: 0 })
+
+
+10. Match nested array of objects Command: $elemMatch
+Example:
+db.users.find({ orders: { $elemMatch: { product: "Phone", qty: 2 } } })
+
+
+
+──────────────────────────── MongoDB Date Operations ────────────────────────────
+
+1. Insert current date Command: new Date()
+Example:
+db.logs.insertOne({ user: "John", login: new Date() })
+
+
+2. Find date greater than Command: $gt
+Example:
+db.logs.find({ login: { $gt: new Date("2024-01-01") } })
+
+
+3. Find date less than Command: $lt
+Example:
+db.logs.find({ login: { $lt: new Date("2023-12-31") } })
+
+
+4. Find date between range Command: $gte + $lte
+Example:
+db.logs.find({ login: { $gte: new Date("2024-01-01"), $lte: new Date("2024-12-31") } })
+
+
+5. Update with current date Command: $currentDate
+Example:
+db.logs.updateOne({ user: "John" }, { $currentDate: { lastLogin: true } })
+
+
+6. Insert specific ISO date Command: ISODate()
+Example:
+db.events.insertOne({ eventDate: ISODate("2025-01-01") })
+
+
+7. Format date using aggregation Command: $dateToString
+Example:
+db.logs.aggregate([{ $project: { formatted: { $dateToString: { format: "%d-%m-%Y", date: "$login" } } } }])
+
+
+8. Extract year from date Command: $year
+Example:
+db.logs.aggregate([{ $project: { year: { $year: "$login" } } }])
+
+
+9. Extract month from date Command: $month
+Example:
+db.logs.aggregate([{ $project: { month: { $month: "$login" } } }])
+
+
+10. Extract day of month Command: $dayOfMonth
+Example:
+db.logs.aggregate([{ $project: { day: { $dayOfMonth: "$login" } } }])
+
+
+11. Extract day of week Command: $dayOfWeek
+Example:
+db.logs.aggregate([{ $project: { dow: { $dayOfWeek: "$login" } } }])
+
+
+12. Extract time parts (hour, minute, etc.) Example:
+db.logs.aggregate([{ $project: { hour: { $hour: "$login" }, minute: { $minute: "$login" } } }])
+
+

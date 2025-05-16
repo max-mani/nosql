@@ -1,0 +1,227 @@
+
+---
+
+1. db.createUser()
+
+Purpose: Create a new user with specified roles.
+
+Syntax:
+
+db.createUser({
+  user: "username",
+  pwd: "password",
+  roles: [{ role: "roleName", db: "dbName" }]
+})
+
+Example:
+
+db.createUser({
+  user: "adminUser",
+  pwd: "securePass123",
+  roles: [{ role: "readWrite", db: "myDatabase" }]
+})
+
+Creates a user adminUser with read-write access to myDatabase.
+
+
+---
+
+2. db.dropUser()
+
+Purpose: Remove a specific user.
+
+Syntax:
+
+db.dropUser("username")
+
+Example:
+
+db.dropUser("adminUser")
+
+Deletes the user adminUser from the current database.
+
+
+---
+
+3. db.updateUser()
+
+Purpose: Modify a user's password or roles.
+
+Syntax:
+
+db.updateUser("username", {
+  pwd: "newpassword",
+  roles: [{ role: "roleName", db: "dbName" }]
+})
+
+Example:
+
+db.updateUser("adminUser", {
+  pwd: "newSecurePass",
+  roles: [{ role: "dbAdmin", db: "myDatabase" }]
+})
+
+Updates adminUser's password and gives them dbAdmin role in myDatabase.
+
+
+---
+
+4. db.grantRolesToUser()
+
+Purpose: Add extra roles to an existing user.
+
+Syntax:
+
+db.grantRolesToUser("username", [{ role: "roleName", db: "dbName" }])
+
+Example:
+
+db.grantRolesToUser("adminUser", [{ role: "read", db: "logsDB" }])
+
+Gives adminUser read access to logsDB.
+
+
+---
+
+5. db.revokeRolesFromUser()
+
+Purpose: Remove specific roles from a user.
+
+Syntax:
+
+db.revokeRolesFromUser("username", [{ role: "roleName", db: "dbName" }])
+
+Example:
+
+db.revokeRolesFromUser("adminUser", [{ role: "read", db: "logsDB" }])
+
+Removes the read role on logsDB from adminUser.
+
+
+---
+
+6. db.createRole()
+
+Purpose: Define a custom role with specific privileges.
+
+Syntax:
+
+db.createRole({
+  role: "roleName",
+  privileges: [],
+  roles: []
+})
+
+Example:
+
+db.createRole({
+  role: "backupOperator",
+  privileges: [
+    { resource: { db: "myDatabase", collection: "" }, actions: ["backup"] }
+  ],
+  roles: []
+})
+
+Creates a custom role backupOperator with backup privileges.
+
+
+---
+
+7. db.dropRole()
+
+Purpose: Delete a custom role.
+
+Syntax:
+
+db.dropRole("roleName")
+
+Example:
+
+db.dropRole("backupOperator")
+
+Deletes the custom role backupOperator.
+
+
+---
+
+8. db.getUser()
+
+Purpose: Get detailed info of a single user.
+
+Syntax:
+
+db.getUser("username")
+
+Example:
+
+db.getUser("adminUser")
+
+Displays info like roles and privileges of adminUser.
+
+
+---
+
+9. db.getUsers()
+
+Purpose: List all users in the current database.
+
+Syntax:
+
+db.getUsers()
+
+Example:
+
+db.getUsers()
+
+Returns an array of all user objects.
+
+
+---
+
+10. db.getRoles()
+
+Purpose: List all roles defined in the current database.
+
+Syntax:
+
+db.getRoles()
+
+Example:
+
+db.getRoles()
+
+Shows both built-in and custom roles.
+
+
+---
+
+11. db.dropAllUsersFromDatabase()
+
+Purpose: Remove all users from the current database.
+
+Syntax:
+
+db.dropAllUsersFromDatabase()
+
+Example:
+
+db.dropAllUsersFromDatabase()
+
+Deletes all users from the database you’re currently in.
+
+
+---
+
+12. db.auth()
+
+Purpose: Authenticate a user (for scripts or CLI).
+
+Syntax:
+
+db.auth("username", "password")
+
+Example:
+
+db.auth("adminUser", "securePass123")
+
+Logs in as adminUser to perform actions.

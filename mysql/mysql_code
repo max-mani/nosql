@@ -1,0 +1,29 @@
+import mysqlx
+
+session = mysqlx.get_session({
+    "host": "localhost",
+    "user":"root",
+    "password":"root", 
+    "port": 33060
+})
+
+db = session.get_schema("testdb")
+try:
+    col = db.get_collection("test")
+    print("Collection already exists.")
+except mysqlx.errors.DatabaseError:
+    col = db.create_collection("test")
+    print("Collection created successfully.")
+
+col.add({"name":"Jane","email":"jane@example.com"}).execute()
+
+for i in col.find().execute().fetch_all():
+    print(i)
+
+col.modify("name = 'Jane'").set("age", 30).execute()
+
+for i in col.find().execute().fetch_all():
+    print(i)
+
+col.remove("name = 'Jane'").execute()
+print("Deleted successfully.")

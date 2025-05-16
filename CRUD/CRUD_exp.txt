@@ -1,0 +1,95 @@
+
+---
+
+1. CREATE (Insert Documents)
+
+Syntax:
+
+db.collection.insertOne({ document })
+db.collection.insertMany([{ document1 }, { document2 }])
+
+Example:
+
+db.students.insertOne({
+  name: "Alice",
+  age: 21,
+  department: "Computer Science"
+})
+
+db.students.insertMany([
+  { name: "Bob", age: 22, department: "IT" },
+  { name: "Charlie", age: 23, department: "ECE" }
+])
+
+Adds one or multiple student records into the students collection.
+
+
+---
+
+2. READ (Find/Retrieve Documents)
+
+Syntax:
+
+db.collection.find({ query })
+db.collection.findOne({ query })
+
+Example:
+
+db.students.find({ age: 22 })
+
+Finds all students with age 22.
+
+db.students.findOne({ name: "Alice" })
+
+Finds the first student document with name "Alice".
+
+To display all documents:
+
+db.students.find()
+
+
+---
+
+3. UPDATE (Modify Documents)
+
+Syntax:
+
+db.collection.updateOne({ filter }, { $set: { updatedFields } })
+db.collection.updateMany({ filter }, { $set: { updatedFields } })
+
+Example:
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $set: { age: 22 } }
+)
+
+Updates age of student "Alice" to 22.
+
+db.students.updateMany(
+  { department: "IT" },
+  { $set: { department: "Information Technology" } }
+)
+
+Updates department for all IT students.
+
+
+---
+
+4. DELETE (Remove Documents)
+
+Syntax:
+
+db.collection.deleteOne({ filter })
+db.collection.deleteMany({ filter })
+
+Example:
+
+db.students.deleteOne({ name: "Charlie" })
+
+Deletes the first student with name "Charlie".
+
+db.students.deleteMany({ age: { $gt: 22 } })
+
+Deletes all students older than 22.
+

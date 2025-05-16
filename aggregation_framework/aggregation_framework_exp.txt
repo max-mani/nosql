@@ -1,0 +1,244 @@
+
+---
+
+1. $match – Filters documents (like find)
+
+db.students.aggregate([
+  { $match: { department: "IT" } }
+])
+
+Returns all students in the IT department.
+
+
+---
+
+2. Logical Operators
+
+$or
+
+db.students.aggregate([
+  { $match: { $or: [{ age: 20 }, { age: 21 }] } }
+])
+
+Finds students aged 20 or 21.
+
+$and (implicit)
+
+db.students.aggregate([
+  { $match: { age: { $gt: 18 }, department: "CSE" } }
+])
+
+Students older than 18 in CSE.
+
+$not, $nor (negation or neither conditions)
+
+{ age: { $not: { $gt: 25 } } }  // age NOT greater than 25
+
+{ $nor: [{ age: 20 }, { department: "IT" }] }  // not 20 and not IT
+
+
+---
+
+3. $count – Counts documents
+
+db.students.aggregate([
+  { $match: { department: "ECE" } },
+  { $count: "ece_students" }
+])
+
+Counts number of ECE students.
+
+
+---
+
+4. $group + Aggregators
+
+db.students.aggregate([
+  { $group: {
+      _id: "$department",
+      total: { $sum: 1 },
+      avgAge: { $avg: "$age" },
+      minAge: { $min: "$age" },
+      maxAge: { $max: "$age" },
+      names: { $push: "$name" },
+      uniqueNames: { $addToSet: "$name" },
+      firstStudent: { $first: "$name" },
+      lastStudent: { $last: "$name" }
+  }}
+])
+
+Groups students by department with summary stats.
+
+
+---
+
+5. Arithmetic Operators
+
+$add, $subtract, $multiply, $divide
+
+db.orders.aggregate([
+  { $project: {
+      total: { $add: ["$price", "$tax"] },
+      discountPrice: { $subtract: ["$price", "$discount"] },
+      totalItems: { $multiply: ["$qty", "$units"] },
+      avgPrice: { $divide: ["$price", "$qty"] }
+  }}
+])
+
+Performs basic math on document fields.
+
+
+---
+
+6. String & Array Operators
+
+$concat
+
+db.students.aggregate([
+  { $project: {
+      fullName: { $concat: ["$firstName", " ", "$lastName"] }
+  }}
+])
+
+$substr (deprecated) → Use $substrBytes or $substrCP
+
+{ $substrBytes: ["$name", 0, 3] }
+
+First 3 letters of name.
+
+$arrayElemAt
+
+db.courses.aggregate([
+  { $project: {
+      firstModule: { $arrayElemAt: ["$modules", 0] }
+  }}
+])
+
+Gets the first element of an array.
+
+$cond – Conditional operator
+
+db.students.aggregate([
+  { $project: {
+      result: {
+        $cond: { if: { $gte: ["$marks", 50] }, then: "Pass", else: "Fail" }
+      }
+  }}
+])
+
+Assigns "Pass" or "Fail" based on marks.
+
+
+---
+
+7. Comparison Operators
+
+$lt, $gt, $eq, $ne
+
+{ age: { $lt: 25 } }     // less than
+{ age: { $gt: 25 } }     // greater than
+{ age: { $eq: 20 } }     // equal to
+{ age: { $ne: 18 } }     // not equal
+
+Used inside $match, $cond, $expr, etc.
+
+
+---
+
+8. Pipeline Controls: $sort, $limit, $skip, $unwind, $out
+
+$sort
+
+{ $sort: { age: -1 } }  // descending
+
+$limit
+
+{ $limit: 5 }
+
+$skip
+
+{ $skip: 2 }
+
+$unwind – Deconstructs array field into multiple documents
+
+db.students.aggregate([
+  { $unwind: "$subjects" }
+])
+
+One document per subject for each student.
+
+$out – Outputs result into a new collection
+
+{ $out: "resultCollection" }
+
+Stores output documents in resultCollection.
+
+
+---
+
+9. Array Operators
+
+$size
+
+db.students.aggregate([
+  { $project: {
+      totalSubjects: { $size: "$subjects" }
+  }}
+])
+
+Gets the number of subjects.
+
+$slice
+
+{ $slice: ["$subjects", 2] }  // First 2 elements
+
+$filter
+
+db.students.aggregate([
+  { $project: {
+      passedSubjects: {
+        $filter: {
+          input: "$subjects",
+          as: "sub",
+          cond: { $gte: ["$$sub.marks", 40] }
+        }
+      }
+  }}
+])
+
+Keeps only subjects with marks ≥ 40.
+
+$map
+
+db.students.aggregate([
+  { $project: {
+      subjectNames: {
+        $map: {
+          input: "$subjects",
+          as: "s",
+          in: "$$s.name"
+        }
+      }
+  }}
+])
+
+Extracts all subject names.
+
+$reduce
+
+db.nums.aggregate([
+  { $project: {
+      total: {
+        $reduce: {
+          input: "$numbers",
+          initialValue: 0,
+          in: { $add: ["$$value", "$$this"] }
+        }
+      }
+  }}
+])
+
+Sums all values in the numbers array.
+
+
+---

@@ -1,0 +1,151 @@
+---
+
+1. Field Operators
+
+$set – Set the value of a field
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $set: { age: 22 } }
+)
+
+$unset – Remove a field
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $unset: { age: "" } }
+)
+
+$inc – Increment a field by a value
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $inc: { marks: 5 } }
+)
+
+$mul – Multiply a field value
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $mul: { marks: 2 } }
+)
+
+$rename – Rename a field
+
+db.students.updateOne(
+  {},
+  { $rename: { "department": "dept" } }
+)
+
+
+---
+
+2. Array Update Operators
+
+$push – Add an item to the array
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $push: { subjects: "Math" } }
+)
+
+$pushAll (Deprecated – use $push + $each):
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $push: { subjects: { $each: ["Physics", "Chemistry"] } } }
+)
+
+$addToSet – Add to array only if not already present
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $addToSet: { subjects: "Biology" } }
+)
+
+$pull – Remove specific value(s) from array
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $pull: { subjects: "Math" } }
+)
+
+$pop – Remove the first (-1) or last (1) element
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $pop: { subjects: -1 } }  // Removes first subject
+)
+
+$slice – Limit number of array items (used with $push)
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $push: {
+      subjects: {
+        $each: ["History", "English"],
+        $slice: -3
+      }
+  }}
+)
+
+Retains only last 3 subjects after pushing.
+
+
+---
+
+3. Array Position & Sorting in $push
+
+$position – Insert at specific index
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $push: {
+      subjects: {
+        $each: ["Economics"],
+        $position: 1
+      }
+  }}
+)
+
+Inserts "Economics" at index 1 in subjects.
+
+$sort (within $push) – Sort array while inserting
+
+db.students.updateOne(
+  { name: "Alice" },
+  { $push: {
+      scores: {
+        $each: [50, 70],
+        $sort: 1
+      }
+  }}
+)
+
+Adds and sorts the scores array in ascending order.
+
+
+---
+
+4. Query Operators for Arrays
+
+$in – Match if any value exists in the array
+
+db.students.find({ subjects: { $in: ["Math", "Biology"] } })
+
+$all – Match if all values exist
+
+db.students.find({ subjects: { $all: ["Math", "English"] } })
+
+$elemMatch – Match array element with multiple conditions
+
+db.students.find({
+  marks: {
+    $elemMatch: { subject: "Math", score: { $gte: 50 } }
+  }
+})
+
+Finds students who scored ≥50 in Math (as part of embedded documents in marks).
+
+
+---

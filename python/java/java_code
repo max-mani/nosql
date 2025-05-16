@@ -1,0 +1,33 @@
+package sample;
+
+import com.mongodb.client.*;
+import com.mongodb.client.model.*;
+import com.mongodb.client.result.*;
+import org.bson.*;
+import org.bson.conversions.*;
+
+
+public class welcome {
+
+	public static void main(String[] args) {
+		String uri = "mongodb://localhost:27017/";
+		MongoClient mongoclient = MongoClients.create(uri);
+		MongoDatabase db = mongoclient.getDatabase("sampleDB");
+		MongoCollection<Document> col = db.getCollection("users");
+		
+		Document docs = new Document("name","Prasanna").append("age",19).append("place","Rajaplayam");
+		col.insertOne(docs);
+		
+		for(Document doc : col.find())
+			System.out.println(doc.toJson());
+		
+		col.updateOne(Filters.eq("name","Prasanna"), Updates.set("age",20));
+		for (Document doc : col.find())
+			System.out.println(doc.toJson());
+		
+		col.deleteOne(Filters.eq("name","Prasanna"));
+		for (Document doc : col.find())
+			System.out.println(doc.toJson());
+	}
+
+}
