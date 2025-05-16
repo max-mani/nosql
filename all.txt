@@ -1,0 +1,131 @@
+1. mysqlx 
+import mysqlx
+
+session = mysqlx.get_session({
+    "host": "localhost",
+    "user":"root",
+    "password":"root", 
+    "port": 33060
+})
+
+db = session.get_schema("testdb")
+try:
+    col = db.get_collection("test")
+    print("Collection already exists.")
+except mysqlx.errors.DatabaseError:
+    col = db.create_collection("test")
+    print("Collection created successfully.")
+
+col.add({"name":"Jane","email":"jane@example.com"}).execute()
+
+for i in col.find().execute().fetch_all():
+    print(i)
+
+col.modify("name = 'Jane'").set("age", 30).execute()
+
+for i in col.find().execute().fetch_all():
+    print(i)
+
+col.remove("name = 'Jane'").execute()
+print("Deleted successfully.")
+
+
+
+
+-----------------------------------------------------------------------------------------------------------
+2. pyMongo
+
+from pymongo import MongoClient
+
+client = MongoClient("mongodb://localhost:27017/")
+
+db = client["db"]
+col = db["dbs"]
+
+col.insert_one({"name":"John","email":"john@example.com"})
+col.insert_one({"name":"Jane","email":"jane@example.com"})
+
+doc = col.find()
+for i in doc:
+    print(i)
+
+col.update_one({"name":"John"}, {"$set":{"age":30}})
+doc = col.find()
+for i in doc:
+    print(i)
+
+col.delete_one({"name":"Jane"})
+doc = col.find()
+for i in doc:
+    print(i)
+
+
+--------------------------------------------------------------------------------------------------------------
+
+3. java 
+
+public static void main(String[] args) {
+		String uri = "mongodb://localhost:27017/";
+		MongoClient mongoclient = MongoClients.create(uri);
+		MongoDatabase db = mongoclient.getDatabase("sampleDB");
+		MongoCollection<Document> col = db.getCollection("users");
+		
+		Document docs = new Document("name","Prasanna").append("age",19).append("place","Rajaplayam");
+		col.insertOne(docs);
+		
+		for(Document doc : col.find())
+			System.out.println(doc.toJson());
+		
+		col.updateOne(Filters.eq("name","Prasanna"), Updates.set("age",20));
+		for (Document doc : col.find())
+			System.out.println(doc.toJson());
+		
+		col.deleteOne(Filters.eq("name","Prasanna"));
+		for (Document doc : col.find())
+			System.out.println(doc.toJson());
+	}
+
+--------------------------------------------------------------------------------------------------------
+
+4. PHP
+
+<?php
+
+require 'vendor/autoload.php'; 
+use MongoDB\Client;
+
+$client = new Client("mongodb://localhost:27017/");
+$db = $client->school;  
+$collection = $db->students;  
+
+$collection->insertOne([
+    "Name" => "Kishore",
+    "Age" => 19,
+    "Grade" => "A",
+    "Subject" => "Physics",
+    "Attendance" => 88,
+    "Subjects" => ["Philosophy", "Sociology"]
+]);
+
+$collection->insertOne([
+    "Name" => "Alice Johnson",
+    "Age" => 19,
+    "Grade" => "O",
+    "Subject" => "Maths",
+    "Attendance" => 96,
+    "Subjects" => ["History", "Economics"]
+]);
+
+$collection->updateOne(
+    ["Name" => "Kishore"],
+    ['$set' => ["Grade" => "A+"]]
+);
+
+$collection->deleteOne(["Name" => "Alice Johnson"]);
+
+$docs = $collection->find();
+foreach ($docs as $doc) {
+    echo "Name: " . $doc['Name'] . " | Grade: " . $doc['Grade'] . "<br>";
+}
+
+?>
