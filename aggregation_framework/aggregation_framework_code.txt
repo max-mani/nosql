@@ -1,0 +1,48 @@
+db.collection.aggregate([{ $match: { age: { $gt: 20 } } }])
+db.collection.aggregate([{ $match: { $or: [{ age: 25 }, { name: "Alice" }] } }])
+db.collection.aggregate([{ $count: "total" }])
+
+db.collection.aggregate([
+  { $group: { _id: "$dept", total: { $sum: 1 } } }
+])
+
+db.collection.aggregate([
+  { $group: { _id: "$dept", minAge: { $min: "$age" }, maxAge: { $max: "$age" },
+              avgAge: { $avg: "$age" }, total: { $sum: "$age" } } }
+])
+
+db.collection.aggregate([
+  { $group: { _id: "$dept", allNames: { $push: "$name" }, firstName: { $first: "$name" },
+              lastName: { $last: "$name" }, uniqueNames: { $addToSet: "$name" } } }
+])
+
+db.collection.aggregate([
+  { $project: { total: { $add: ["$math", "$science"] },
+                diff: { $subtract: ["$math", "$science"] },
+                mult: { $multiply: ["$math", "$science"] },
+                div: { $divide: ["$math", "$science"] } } }
+])
+
+db.collection.aggregate([
+  { $project: { fullName: { $concat: ["$first", " ", "$last"] },
+                shortName: { $substr: ["$first", 0, 3] },
+                thirdSubject: { $arrayElemAt: ["$subjects", 2] },
+                passStatus: { $cond: { if: { $gt: ["$marks", 40] }, then: "Pass", else: "Fail" } } } }
+])
+
+db.collection.aggregate([{ $match: { age: { $lt: 30 } } }])
+db.collection.aggregate([{ $sort: { age: -1 } }])
+db.collection.aggregate([{ $limit: 5 }])
+db.collection.aggregate([{ $skip: 3 }])
+db.collection.aggregate([{ $unwind: "$subjects" }])
+db.collection.aggregate([{ $out: "newCollection" }])
+
+db.collection.aggregate([{ $project: { subjectCount: { $size: "$subjects" } } }])
+db.collection.aggregate([{ $project: { firstTwo: { $slice: ["$subjects", 2] } } }])
+db.collection.aggregate([{ $project: { passed: { $filter: {
+  input: "$marks", as: "m", cond: { $gt: ["$$m", 40] } } } } }])
+db.collection.aggregate([{ $project: { upper: { $map: {
+  input: "$subjects", as: "s", in: { $toUpper: "$$s" } } } } }])
+db.collection.aggregate([{ $project: { total: { $reduce: {
+  input: "$marks", initialValue: 0,
+  in: { $add: ["$$value", "$$this"] } } } } }])

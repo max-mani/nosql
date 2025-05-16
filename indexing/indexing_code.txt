@@ -1,0 +1,26 @@
+db.collection.createIndex({ field: 1 })
+db.students.createIndex({ name: 1 })
+db.students.createIndex({ name: 1, age: -1 })
+db.articles.createIndex({ content: "text" })
+db.articles.find({ $text: { $search: "mongodb indexing" } })
+db.users.createIndex({ user_id: "hashed" })
+db.students.createIndex({ subjects: 1 })
+db.places.createIndex({ location: "2d" })
+db.places.createIndex({ location: "2dsphere" })
+db.places.find({
+  location: {
+    $near: {
+      $geometry: {
+        type: "Point",
+        coordinates: [77.5946, 12.9716]
+      },
+      $maxDistance: 1000
+    }
+  }
+})
+db.users.createIndex({ email: 1 }, { unique: true })
+db.records.createIndex({ optionalField: 1 }, { sparse: true })
+db.logs.createIndex({ createdAt: 1 }, { expireAfterSeconds: 3600 })
+db.students.createIndex({ grade: 1 }, { partialFilterExpression: { grade: { $gte: 90 } } })
+db.collection.getIndexes()
+db.collection.dropIndex({ name: 1 })

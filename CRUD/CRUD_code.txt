@@ -1,0 +1,13 @@
+db.collection.insertOne({ name: "Alice", age: 25 })
+db.collection.insertMany([{ name: "Bob" }, { name: "Carol" }])
+
+db.collection.find()
+db.collection.find({ name: "Alice" })
+db.collection.findOne({ age: 25 })
+
+db.collection.updateOne({ name: "Alice" }, { $set: { age: 26 } })
+db.collection.updateMany({ age: { $lt: 20 } }, { $inc: { age: 1 } })
+db.collection.replaceOne({ name: "Bob" }, { name: "Bob", age: 30 })
+
+db.collection.deleteOne({ name: "Carol" })
+db.collection.deleteMany({ age: { $gt: 30 } })

@@ -1,0 +1,26 @@
+db.createUser({
+  user: "username",
+  pwd: "password",
+  roles: [{ role: "roleName", db: "dbName" }]
+})
+
+db.dropUser("username")
+
+db.updateUser("username", {
+  pwd: "newpassword",
+  roles: [{ role: "roleName", db: "dbName" }]
+})
+
+db.grantRolesToUser("username", [{ role: "roleName", db: "dbName" }])
+db.revokeRolesFromUser("username", [{ role: "roleName", db: "dbName" }])
+
+db.createRole({ role: "roleName", privileges: [], roles: [] })
+db.dropRole("roleName")
+
+db.getUser("username")
+db.getUsers()
+db.getRoles()
+
+db.dropAllUsersFromDatabase()
+
+db.auth("username", "password")

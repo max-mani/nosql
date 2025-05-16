@@ -1,0 +1,18 @@
+db.collection.updateOne({ name: "Alice" }, { $set: { age: 22 } })
+db.collection.updateOne({ name: "Alice" }, { $unset: { age: "" } })
+db.collection.updateOne({ name: "Alice" }, { $inc: { marks: 5 } })
+db.collection.updateOne({ name: "Alice" }, { $mul: { marks: 2 } })
+db.collection.updateOne({}, { $rename: { "department": "dept" } })
+
+db.collection.updateOne({ name: "Alice" }, { $push: { subjects: "Math" } })
+db.collection.updateOne({ name: "Alice" }, { $push: { subjects: { $each: ["Physics", "Chemistry"] } } })
+db.collection.updateOne({ name: "Alice" }, { $addToSet: { subjects: "Biology" } })
+db.collection.updateOne({ name: "Alice" }, { $pull: { subjects: "Math" } })
+db.collection.updateOne({ name: "Alice" }, { $pop: { subjects: -1 } })
+db.collection.updateOne({ name: "Alice" }, { $push: { subjects: { $each: ["History", "English"], $slice: -3 } } })
+db.collection.updateOne({ name: "Alice" }, { $push: { subjects: { $each: ["Economics"], $position: 1 } } })
+db.collection.updateOne({ name: "Alice" }, { $push: { scores: { $each: [50, 70], $sort: 1 } } })
+
+db.collection.find({ subjects: { $in: ["Math", "Biology"] } })
+db.collection.find({ subjects: { $all: ["Math", "English"] } })
+db.collection.find({ marks: { $elemMatch: { subject: "Math", score: { $gte: 50 } } } })
